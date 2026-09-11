@@ -18,15 +18,42 @@
       text-align: center;
       user-select: none;
     }
-    .icon { font-size: 50px; margin-bottom: 20px; }
+    .icon { font-size: 50px; margin-bottom: 15px; }
     .title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-    .message { font-size: 14px; color: #aaaaaa; padding: 0 30px; line-height: 1.5; }
-    #secret-trigger {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
+    .message { font-size: 13px; color: #aaaaaa; padding: 0 30px; line-height: 1.5; margin-bottom: 25px; }
+    
+    .pass-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    input[type="password"] {
+      background-color: #222;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      width: 180px;
+      outline: none;
+    }
+    button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:active { background-color: #555; }
+    #error-msg {
+      color: #ff5555;
+      font-size: 12px;
+      margin-top: 8px;
+      height: 16px;
     }
   </style>
 </head>
@@ -35,29 +62,35 @@
   <div class="icon">⚠️</div>
   <div class="title">LINEを起動できません</div>
   <div class="message">
-    データ構造に問題が発生したため、アプリを一時的に保護しています。<br>
-    しばらく時間をおいてから再試行してください。(Error: 0x80070005)
+    セキュリティ保護のため制限されています。<br>復旧用パスコードを入力してください。
   </div>
 
-  <div id="secret-trigger"></div>
+  <div class="pass-container">
+    <input type="password" id="passInput" placeholder="パスコードを入力" maxlength="8">
+    <button onclick="checkPass()">解除</button>
+    <div id="error-msg"></div>
+  </div>
 
   <script>
-    let tapCount = 0;
-    let timer = null;
-    const trigger = document.getElementById('secret-trigger');
+    // ★ここに正解のパスワードを設定（初期設定: 1234）
+    const SECRET_PASS = "1201";
 
-    trigger.addEventListener('click', () => {
-      tapCount++;
-      clearTimeout(timer);
+    function checkPass() {
+      const input = document.getElementById('passInput').value;
+      const errorDiv = document.getElementById('error-msg');
 
-      if (tapCount >= 3) {
-        alert("認証成功: LINEへ遷移します");
-        window.location.href = "line://";
-        tapCount = 0;
+      if (input === SECRET_PASS) {
+        errorDiv.style.color = "#55ff55";
+        errorDiv.innerText = "認証成功。移動します...";
+        setTimeout(() => {
+          window.location.href = "line://";
+        }, 500);
       } else {
-        timer = setTimeout(() => { tapCount = 0; }, 1500);
+        errorDiv.style.color = "#ff5555";
+        errorDiv.innerText = "パスコードが正しくありません";
+        document.getElementById('passInput').value = "";
       }
-    });
+    }
   </script>
 </body>
 </html>
