@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>システムエラー</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      user-select: none;
+    }
+    .icon { font-size: 50px; margin-bottom: 20px; }
+    .title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+    .message { font-size: 14px; color: #aaaaaa; padding: 0 30px; line-height: 1.5; }
+    #secret-trigger {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="icon">⚠️</div>
+  <div class="title">LINEを起動できません</div>
+  <div class="message">
+    データ構造に問題が発生したため、アプリを一時的に保護しています。<br>
+    しばらく時間をおいてから再試行してください。(Error: 0x80070005)
+  </div>
+
+  <div id="secret-trigger"></div>
+
+  <script>
+    let tapCount = 0;
+    let timer = null;
+    const trigger = document.getElementById('secret-trigger');
+
+    trigger.addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(timer);
+
+      if (tapCount >= 3) {
+        alert("認証成功: LINEへ遷移します");
+        window.location.href = "line://";
+        tapCount = 0;
+      } else {
+        timer = setTimeout(() => { tapCount = 0; }, 1500);
+      }
+    });
+  </script>
+</body>
+</html>
